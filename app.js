@@ -1,10 +1,12 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+require('dotenv/config');
 
 const app = express();
 
 const { eAdmin } = require('./middlewares/auth');
+const db = require('./models/db');
 
 app.use(express.json());
 
@@ -33,15 +35,15 @@ app.post('/login', async (req, res) => {
     });
   }
 
-  if (!(await bcrypt.compare(req.body.password, '$2a$08$hdI4Vl/NKfeKkuQfaIfsIe7DkbkTAe5N.gHIOLXsPRIJ2wH2xVuFu'))) {
+  if (!(await bcrypt.compare(req.body.password, '$2a$08$vfD/XSvcSvmN0vsbdL5LeOAElQ7lSWv9bMKAORcl.QqdZOQ3gg2rK'))) {
     return res.status(400).json({
       error: true,
       message: 'Invalid user or ppassword!'
     });
   }
 
-  var token = jwt.sign({id: 1}, 'SASDERFGHNB44SASE54F1G5DFG2', {
-    expiresIn: 60 // 60 segundos
+  var token = jwt.sign({id: 1}, process.env.JWT_KEY, {
+    expiresIn: 60
   });
 
   return res.json({
