@@ -1,6 +1,9 @@
-COMO RODAR O PROJETO BAIXADO
-Instalar todas as dependencias indicada pelo package.json
-### npm install
+#### Instalar as dependências indicadas
+```
+npm install
+```
 
-Rodar o projeto usando o nodemon 
-### nodemon app.js
+#### Rodar o projeto usando o nodemon 
+```
+nodemon app.js
+```
