@@ -7,19 +7,34 @@ const app = express();
 
 const { eAdmin } = require('./middlewares/auth');
 const db = require('./models/db');
+const User = require('./models/User');
 
 app.use(express.json());
 
 app.get('/', eAdmin, async (req, res) => {
-  return res.json({
-    error: false,
-    message: 'List users'
+  await User.findAll({
+    attributes: ['id', 'name', 'user'],
+    order: [['id', "DESC"]]
+  })
+  .then((users) => {
+    return res.json({
+      error: false,
+      users,
+      id_logged_user: req.userId
+    });
+  }).catch(() => {
+    return res.status(400).json({
+      error: true,
+      message: "Erro: Nenhum usuário encontrado!"
+    });
   });
 });
 
 app.post('/register', async (req, res) => {
-  const password = await bcrypt.hash('123456', 8);
-  console.log(password);
+  const dados = req.body;
+  dados.password = await bcrypt.hash(dados.password, 8);
+
+  await User.create(dados);
 
   return res.json({
     error: false,
@@ -28,17 +43,24 @@ app.post('/register', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-  if (req.body.user != 'usuario@email.com') {
+  const user = await User.findOne({
+    attributes: ['id', 'name', 'user', 'password'],
+    where: {
+      user: req.body.user
+    }
+  });
+
+  if(user === null){
     return res.status(400).json({
       error: true,
-      message: 'Invalid uuser or password!'
+      message: "Inavlid user or password!"
     });
   }
 
-  if (!(await bcrypt.compare(req.body.password, '$2a$08$vfD/XSvcSvmN0vsbdL5LeOAElQ7lSWv9bMKAORcl.QqdZOQ3gg2rK'))) {
+  if(!(await bcrypt.compare(req.body.password, user.password))){
     return res.status(400).json({
       error: true,
-      message: 'Invalid user or ppassword!'
+      message: "Inavlid user or password!"
     });
   }
 
