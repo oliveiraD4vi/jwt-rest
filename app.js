@@ -1,15 +1,15 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+
 require('dotenv/config');
+require('./models/db');
 
 const app = express();
+app.use(express.json());
 
 const { eAdmin } = require('./middlewares/auth');
-const db = require('./models/db');
 const User = require('./models/User');
-
-app.use(express.json());
 
 app.get('/', eAdmin, async (req, res) => {
   await User.findAll({
@@ -78,7 +78,7 @@ app.post('/login', async (req, res) => {
   }
 
   var token = jwt.sign({id: 1}, process.env.JWT_KEY, {
-    expiresIn: 60
+    expiresIn: '1d'
   });
 
   return res.json({
@@ -89,5 +89,5 @@ app.post('/login', async (req, res) => {
 });
 
 app.listen(8080, () => {
-  console.log("Servidor iniciado corretamente em http://localhost:8080");
+  console.log("Server successfully initialized at http://localhost:8080");
 });
