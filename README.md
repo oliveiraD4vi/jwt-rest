@@ -1,8 +1,9 @@
-### Instalar todas as dependencias indicada pelo package.json
+#### Instalar as dependências indicadas
 ```
 npm install
 ```
-### Rodar o projeto usando o nodemon 
+
+#### Rodar o projeto usando o nodemon 
 ```
 nodemon app.js
 ```
