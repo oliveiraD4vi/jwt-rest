@@ -34,12 +34,25 @@ app.post('/register', async (req, res) => {
   const dados = req.body;
   dados.password = await bcrypt.hash(dados.password, 8);
 
-  await User.create(dados);
-
-  return res.json({
-    error: false,
-    message: 'User successfully registered!'
+  const user = await User.findOne({
+    attributes: ['user'],
+    where: {
+      user: dados.user
+    }
   });
+
+  if (user === null) {
+    await User.create(dados);
+    return res.json({
+      error: false,
+      message: 'User successfully registered!'
+    });
+  } else {
+    return res.json({
+      error: true,
+      message: 'User already exists!'
+    });
+  }
 });
 
 app.post('/login', async (req, res) => {
