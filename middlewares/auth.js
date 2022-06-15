@@ -9,7 +9,7 @@ module.exports = {
     if (!authHeader) {
       return res.status(400).json({
         error: true,
-        message: 'Access denied!'
+        message: 'Error: Access denied'
       });
     }
 
@@ -18,7 +18,7 @@ module.exports = {
     if(!token){
       return res.status(400).json({
         error: true,
-        message: 'Access denied!'
+        message: 'Error: Access denied'
       });
     }
 
@@ -29,7 +29,7 @@ module.exports = {
     } catch(err) {
       return res.status(400).json({
         error: true,
-        message: 'Access denied!'
+        message: 'Error: Access denied'
       });
     }
   }

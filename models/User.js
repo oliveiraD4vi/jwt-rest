@@ -22,4 +22,7 @@ const User = db.define('users', {
   }
 });
 
+// Create table
+// User.sync();
+
 module.exports = User;

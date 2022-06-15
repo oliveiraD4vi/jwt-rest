@@ -11,7 +11,7 @@ app.use(express.json());
 const { eAdmin } = require('./middlewares/auth');
 const User = require('./models/User');
 
-app.get('/', eAdmin, async (req, res) => {
+app.get('/list', eAdmin, async (req, res) => {
   await User.findAll({
     attributes: ['id', 'name', 'user'],
     order: [['id', "DESC"]]
@@ -25,7 +25,7 @@ app.get('/', eAdmin, async (req, res) => {
   }).catch(() => {
     return res.status(400).json({
       error: true,
-      message: "Erro: Nenhum usuário encontrado!"
+      message: "Error: User not found"
     });
   });
 });
@@ -50,7 +50,7 @@ app.post('/register', async (req, res) => {
   } else {
     return res.json({
       error: true,
-      message: 'User already exists!'
+      message: 'Error: User already exists'
     });
   }
 });
@@ -66,18 +66,18 @@ app.post('/login', async (req, res) => {
   if(user === null){
     return res.status(400).json({
       error: true,
-      message: "Inavlid user or password!"
+      message: "Error: Inavlid user or password!"
     });
   }
 
   if(!(await bcrypt.compare(req.body.password, user.password))){
     return res.status(400).json({
       error: true,
-      message: "Inavlid user or password!"
+      message: "Error: Inavlid user or password!"
     });
   }
 
-  var token = jwt.sign({id: 1}, process.env.JWT_KEY, {
+  var token = jwt.sign({id: user.Id}, process.env.JWT_KEY, {
     expiresIn: '1d'
   });
 
